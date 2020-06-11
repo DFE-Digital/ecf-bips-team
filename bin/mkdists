@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# mkdists
+# Converts a list of modules into a set of Makefile rules.
+#
+# Andy Bennett <andyjpb@digital.education.gov.uk>, 2020/06
+#
+
+MYDIR=$(dirname $0)
+MKDIST=$MYDIR/mkdist
+
+
+while read MODULE; do
+	DIST=$(${MKDIST} ${MODULE})
+
+	echo ${DIST}: ${MODULE}
+	echo "\tcd dist/; unzip ../$^"
+	echo "\ttouch \$@"
+	echo
+done
+

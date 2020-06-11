@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# mkdist
+# Converts a path to a zipfile into a path to distributable module
+#
+# Andy Bennett <andyjpb@digital.education.gov.uk>, 2020/06
+#
+
+MODULE=$1
+DIST=$(echo ${MODULE} | sed -e 's#^src/#dist/#' -e 's#.zip$##')
+
+echo $DIST
+

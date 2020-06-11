@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# mkindex
+# Create an index.html for all the modules specified on stdin.
+#
+# Andy Bennett <andyjpb@digital.education.gov.uk>, 2020/06
+#
+
+MYDIR=$(dirname $0)
+MKDIST=$MYDIR/mkdist
+
+
+echo "
+<html>
+<head>
+<title>Early Career Framework - Basic Induction Packages</title>
+</head>
+
+<body>
+<h1>Early Career Framework</h1>
+<h2>Basic Induction Packages</h2>
+<ul>
+"
+
+while read MODULE; do
+	DIST=$(${MKDIST} ${MODULE})
+	URL=$(echo ${DIST} | cut -f 2- -d/)
+	TITLE=$(grep title ${DIST}/index.html | sed -e 's#.*<title>\(.*\)</title>.*#\1#')
+
+	echo "<li><a href=\"${URL}/index.html\">${TITLE}</a></li>"
+done
+
+echo "
+</ul>
+</body>
+</html>
+"
+

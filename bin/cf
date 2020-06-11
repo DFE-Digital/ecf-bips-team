@@ -1,0 +1,13 @@
+#!/bin/sh
+
+MYDIR=$(dirname $0)
+
+MACHINE=`uname -m`
+OS=`uname -s`
+
+CF=${MYDIR}/cf.${OS}.${MACHINE}
+
+export CF_HOME=${MYDIR}/../cf
+
+eval ${CF} $@
+

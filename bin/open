@@ -1,0 +1,10 @@
+#!/bin/sh
+
+OS=`uname -s`
+
+if [ "${OS}" = "Darwin" ]; then
+	open $@
+else
+	firefox $@
+fi
+

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# check-empty
+# Checks that stdin is empty.
+#
+# Andy Bennett <andyjpb@digital.education.gov.uk>, 2020/06
+
+MSG=${1:-"There are uncommitted changes in the repository!"}
+NOT_EMPTY=0
+
+while read DIFF; do
+
+	if [ "${NOT_EMPTY}" -eq 0 ]; then
+		echo "\n\n${MSG}\n"
+	fi
+
+	NOT_EMPTY=1
+done;
+
+exit ${NOT_EMPTY}
+
