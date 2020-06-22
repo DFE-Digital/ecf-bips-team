@@ -26,7 +26,7 @@ RELEASE_REPO=git@github.com:DFE-Digital/ecf-bips-release.git
 CF_PUSH_FLAGS=push -p dist -b staticfile_buildpack -m 64M -k 64M
 
 
-.PHONY: all help dists browse cf cf-login cf-check deploy undeploy list-deploys check-src release live clean mrproper
+.PHONY: all help dists browse cf-login cf-check deploy undeploy list-deploys check-src release live clean mrproper
 
 
 all: dists dist/index.html
@@ -55,7 +55,7 @@ help:
 	@echo " make browse"
 	@echo "  Open the locally built site in a web browser."
 	@echo
-	@echo " make cf"
+	@echo " make cf-login"
 	@echo "  Ensure the CloudFoundry configuration is set up properly: log in and set the"
 	@echo "  target."
 	@echo
@@ -129,11 +129,12 @@ cf/.cf/config.json:
 
 cf-login:
 	${CF} login -a api.london.cloud.service.gov.uk
+	${CF} target -o dfe-digital -s early-careers-framework
 
 cf-check:
-	${CF} apps > /dev/null || echo "\n\nGOV.UK PaaS Authentication has expired. Please run \`make cf-login\` to log in again.\n"
+	${CF} apps > /dev/null || (echo "\n\nGOV.UK PaaS Authentication has expired. Please run \`make cf-login\` to log in again.\n" ; exit 1)
 
-deploy: cf/.cf/config.json dist
+deploy: cf/.cf/config.json cf-check dist
 	${CF} ${CF_PUSH_FLAGS} -d $(MY_DOMAIN) ${MY_DEPLOY}
 	@echo
 	@echo
@@ -142,7 +143,7 @@ deploy: cf/.cf/config.json dist
 	@echo "Deployed:"
 	@echo " https://$(MY_DEPLOY).$(MY_DOMAIN)"
 
-undeploy: cf/.cf/config.json
+undeploy: cf/.cf/config.json cf-check
 	${CF} delete -f ${MY_DEPLOY}
 
 list-deploys: cf/.cf/config.json
