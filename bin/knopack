@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# knopack
+# Pack and unpack a Knowbly data.js file to expose the Knowbly JSON data.
+#
+# knopack -u < data.js > data.unpacked.js
+# knopack -p < data.unpacked.js > data.js
+#
+# Andy Bennett <andyjpb@digital.education.gov.uk>, 2020/06/17 11:42
+#
+
+OPTION=$1
+
+usage() {
+	echo "USAGE:\t`basename $0` -u|-p|--help"               >&2
+	echo "\t`basename $0` -u < data.js > data.unpacked.js"  >&2
+	echo "\t`basename $0` -p < data.unpacked.js > data.js"  >&2
+}
+
+if [ $# -ne 1 ]; then
+	usage
+	exit 1
+fi
+
+if [ "$1" = "--help" ]; then
+	usage
+	exit 0
+
+elif [ "$1" = "-u" ]; then
+	# Unpack the file
+	sed -e 's#^ var data = "##' -e 's#"$##' | base64 -d
+
+elif [ "$1" = "-p" ]; then
+	# Repack the file
+	base64 -w0 | sed -e 's#^# var data = "#' -e 's#$#"\n#'
+
+else
+	usage
+	exit 1
+fi
+
+
