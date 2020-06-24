@@ -28,11 +28,11 @@ if [ "$1" = "--help" ]; then
 
 elif [ "$1" = "-u" ]; then
 	# Unpack the file
-	sed -e 's#^ var data = "##' -e 's#"$##' | base64 -d
+	sed -e 's#^ var data = "##' -e 's#"$##' | base64 -d | jq .
 
 elif [ "$1" = "-p" ]; then
 	# Repack the file
-	base64 -w0 | sed -e 's#^# var data = "#' -e 's#$#"\n#'
+	jq -c . | tr -d '\n' | base64 -w0 | sed -e 's#^# var data = "#' -e 's#$#"#'
 
 else
 	usage
